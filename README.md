@@ -4,9 +4,9 @@
 
 ![logo_unsulbar](public/logo.jpeg)
 
+seri
 
-
-<b>Sei maharani</b><br>
+<b>Sri maharani</b><br>
 <b>D0222034</b><br>
 <b>Framework Web Based</b><br>
 <b>2025</b>
