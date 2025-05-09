@@ -4,7 +4,6 @@
 
 ![logo_unsulbar](public/logo.jpeg)
 
-seri
 
 <b>Sri maharani</b><br>
 <b>D0222034</b><br>
