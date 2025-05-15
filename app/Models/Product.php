@@ -11,11 +11,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+
     protected $fillable = [
         'owner_id',
         'category_id',
@@ -26,25 +22,18 @@ class Product extends Model
         'image',
     ];
 
-    /**
-     * Get the user who owns this product.
-     */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    /**
-     * Get the category that this product belongs to.
-     */
+ 
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Get the order items that include this product.
-     */
+
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);

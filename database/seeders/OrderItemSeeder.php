@@ -4,19 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Order; // Asumsi model Order ada
-use App\Models\Product; // Asumsi model Product ada
+use App\Models\Order; 
+use App\Models\Product; 
 
 class OrderItemSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        $order1 = Order::where('status', 'completed')->first(); // Ambil order completed pertama
-        $order2 = Order::where('status', 'paid')->first(); // Ambil order paid pertama
-        $order3 = Order::where('status', 'pending')->first(); // Ambil order pending pertama
+        $order1 = Order::where('status', 'completed')->first(); 
+        $order2 = Order::where('status', 'paid')->first(); 
+        $order3 = Order::where('status', 'pending')->first(); 
 
         $laptop = Product::where('name', 'Laptop XYZ')->first();
         $tshirt = Product::where('name', 'T-Shirt Keren')->first();

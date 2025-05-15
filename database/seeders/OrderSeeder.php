@@ -8,9 +8,7 @@ use App\Models\User; // Asumsi model User ada
 
 class OrderSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         $pelanggan1 = User::where('email', 'pelanggan1@example.com')->first();
