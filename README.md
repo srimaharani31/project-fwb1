@@ -131,7 +131,7 @@ Pengelola sistem yang memiliki akses penuh terhadap semua data dan pengguna.
 | id          | BIGINT (PK)    | Primary key                                 |
 | user_id     | BIGINT (FK)    | FK ke `users.id`                            |
 | product_id  | BIGINT (FK)    | FK ke `products.id`                         |
-| rating      | TINYINT        | Nilai 1–5                                   |                            |
+| rating      | TINYINT        | Nilai 1–5                                   |                            
 | created_at  | TIMESTAMP      | Tanggal dibuat                              |
 | updated_at  | TIMESTAMP      | Terakhir diperbarui                         |
 
