@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -15,40 +13,28 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    // public function login(Request $request)
-    // {
-    //     $credentials = $request->only('email', 'password');
-
-    //     if (Auth::attempt($credentials)) {
-    //         $request->session()->regenerate();
-
-    //         // Redirect berdasarkan role
-    //         switch (auth()->user()->role) {
-    //             case 'admin':
-    //                 return redirect()->route('admin.dashboard');
-    //             case 'owner':
-    //                 return redirect()->route('owner.dashboard');
-    //             default:
-    //                 return redirect()->route('pelanggan.dashboard');
-    //         }
-    //     }
-
-    //     return back()->withErrors([
-    //         'email' => 'Email atau password salah.',
-    //     ]);
-    // }
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('/dashboard'); // atau route sesuai role
+            $request->session()->regenerate();
+
+            // Redirect berdasarkan role
+            switch (auth()->user()->role) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard');
+                case 'owner':
+                    return redirect()->route('owner.dashboard');
+                default:
+                    return redirect()->route('pelanggan.dashboard');
+            }
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ]);
     }
-
-
     public function logout(Request $request)
     {
         Auth::logout();

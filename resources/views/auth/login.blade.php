@@ -6,12 +6,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-
-  <div
-    class="absolute inset-0 bg-cover bg-center opacity-30"
-    style="background-image: url('/images/bedround.jpeg');">
-</div>
-
     <div class="w-full max-w-sm bg-white p-8 rounded-xl shadow-md">
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
 
@@ -42,9 +36,6 @@
             </button>
         </form>
 
-        <div class="mt-4 text-center text-sm text-gray-500">
-            Belum punya akun? <a href="#" class="text-blue-600 hover:underline">Daftar di sini</a>
-        </div>
     </div>
 </body>
 </html>
