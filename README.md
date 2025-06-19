@@ -24,7 +24,6 @@ Pengguna umum yang dapat menjelajahi dan membeli produk.
 - Menambahkan produk ke keranjang (opsional)
 - Melakukan pemesanan (checkout)
 - Melihat status & riwayat pesanan
-- Memberi ulasan/rating pada produk yang dibeli
 
 ---
 
@@ -37,7 +36,7 @@ Pemilik toko yang dapat mengelola produk thrift yang dijual.
 - Mengedit dan menghapus produk
 - Melihat dan mengelola pesanan yang masuk
 - Melihat statistik penjualan
-- Melihat ulasan pelanggan terhadap produknya
+
 
 ---
 

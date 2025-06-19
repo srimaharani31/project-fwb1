@@ -2,16 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany; // Import for relationships
+
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
@@ -19,26 +24,52 @@ class User extends Authenticatable
         'role', 
     ];
 
-    
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
- 
-    public function products(): HasMany
+    /**
+     * Relasi: Seorang pengguna (owner) bisa memiliki banyak produk.
+     */
+    public function products()
     {
-        return $this->hasMany(Product::class, 'owner_id');
+        return $this->hasMany(Product::class);
     }
 
-    
-    public function orders(): HasMany
+    /**
+     * Relasi: Seorang pengguna (pelanggan) bisa memiliki banyak pesanan.
+     */
+    public function orders()
     {
-        return $this->hasMany(Order::class);
-}
+        return $this->hasMany(Order::class, 'user_id');
+    }
+
+    /**
+     * Relasi: Seorang pengguna bisa memberikan banyak ulasan.
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'user_id');
+    }
+
+    public function hasRole($role)
+    {
+        return $this->role === $role; // Sesuaikan dengan cara Anda menyimpan role
+    }
 }

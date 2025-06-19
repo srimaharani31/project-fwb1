@@ -1,72 +1,99 @@
 <?php
-  
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderItem;
-use App\Models\Order;
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
-class OrderItemController extends Controller
+class OrderController extends Controller
 {
+    public function placeOrder(Request $request, Product $product)
+    {
+        // Pastikan pengguna adalah pelanggan
+        if (Auth::user()->role !== 'pelanggan') {
+            return redirect()->back()->with('error', 'Hanya pelanggan yang dapat melakukan pembelian.');
+        }
+
+        $quantity = 1; // Untuk tombol "Beli Sekarang", kita asumsikan kuantitas 1.
+                      // Anda bisa membuatnya dinamis jika ada form input kuantitas.
+
+        if ($product->stock < $quantity) {
+            return redirect()->back()->with('error', 'Stok produk tidak mencukupi.');
+        }
+
+        DB::beginTransaction();
+        try {
+            // Buat pesanan baru
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'order_code' => 'ORD-' . Str::upper(Str::random(8)),
+                'total_amount' => $product->price * $quantity,
+                'status' => 'pending',
+            ]);
+
+            // Tambahkan item pesanan
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'price' => $product->price,
+            ]);
+
+            // Kurangi stok produk
+            $product->stock -= $quantity;
+            $product->save();
+
+            DB::commit();
+
+            return redirect()->route('products.index')->with('success', 'Pesanan berhasil dibuat! Kode Pesanan: ' . $order->order_code);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses pesanan: ' . $e->getMessage());
+        }
+    }
+
     public function index()
     {
-        $orderItems = OrderItem::with('order', 'product')->get();
-        return view('order_items.index', compact('orderItems'));
+        // Hanya admin dan owner yang bisa melihat semua pesanan
+        if (Auth::user()->role === 'admin' || Auth::user()->role === 'owner') {
+            $orders = Order::with(['user', 'items.product'])->latest()->paginate(10);
+        } else {
+            // Pelanggan hanya bisa melihat pesanan mereka sendiri
+            $orders = Order::where('user_id', Auth::id())->with(['user', 'items.product'])->latest()->paginate(10);
+        }
+        return view('orders.index', compact('orders'));
     }
 
-    public function create()
+    public function show(Order $order)
     {
-        $orders = Order::all();
-        $products = Product::all();
-        return view('order_items.create', compact('orders', 'products'));
+        // Pastikan pengguna berwenang untuk melihat pesanan ini
+        if (Auth::user()->role === 'pelanggan' && Auth::id() !== $order->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+        $order->load(['user', 'items.product']);
+        return view('orders.show', compact('order'));
     }
 
-    public function store(Request $request)
+    // Anda bisa menambahkan method untuk update status pesanan oleh admin/owner di sini
+    public function updateStatus(Request $request, Order $order)
     {
+        if (Auth::user()->role === 'pelanggan') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengubah status pesanan.');
+        }
+
         $request->validate([
-            'order_id' => 'required|exists:orders,id',
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
+            'status' => 'required|in:pending,completed,cancelled',
         ]);
 
-        OrderItem::create($request->all());
+        $order->status = $request->status;
+        $order->save();
 
-        return redirect()->route('order-items.index')->with('success', 'Order item berhasil ditambahkan.');
-    }
-
-    public function show(OrderItem $orderItem)
-    {
-        $orderItem->load('order', 'product');
-        return view('order_items.show', compact('orderItem'));
-    }
-
-    public function edit(OrderItem $orderItem)
-    {
-        $orders = Order::all();
-        $products = Product::all();
-        return view('order_items.edit', compact('orderItem', 'orders', 'products'));
-    }
-
-    public function update(Request $request, OrderItem $orderItem)
-    {
-        $request->validate([
-            'order_id' => 'required|exists:orders,id',
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
-        ]);
-
-        $orderItem->update($request->all());
-
-        return redirect()->route('order-items.index')->with('success', 'Order item berhasil diperbarui.');
-    }
-
-    public function destroy(OrderItem $orderItem)
-    {
-        $orderItem->delete();
-        return redirect()->route('order-items.index')->with('success', 'Order item berhasil dihapus.');
+        return redirect()->route('orders.index')->with('success', 'Status pesanan berhasil diperbarui.');
     }
 }

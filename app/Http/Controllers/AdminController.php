@@ -3,82 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Product;
-use App\Models\Order;
-use App\Models\Category;
-use App\Models\Report;
+use App\Models\User; 
+use App\Models\Product; 
+use App\Models\Order; 
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function index()
     {
-        return view('admin.dashboard');
-    }
+        // Ambil jumlah pengguna
+        $totalUsers = User::count();
 
-    public function users()
-    {
-        $users = User::where('role', '!=', 'admin')->get();
-        return view('admin.users', compact('users'));
-    }
+        // Ambil total produk
+        $totalProducts = Product::count();
 
-    public function deleteUser($id)
-    {
-        User::findOrFail($id)->delete();
-        return redirect()->route('admin.users')->with('success', 'User berhasil dihapus.');
-    }
+        // Ambil pesanan baru (misalnya, status 'pending' atau 'baru')
+        $newOrders = Order::where('status', 'pending')->count(); // Sesuaikan dengan kolom status Anda
 
-    public function products()
-    {
-        $products = Product::all();
-        return view('admin.products', compact('products'));
-    }
+        // Hitung pendapatan hari ini
+        $todayRevenue = Order::whereDate('created_at', today())
+                             ->where('status', 'completed') // Hanya pesanan yang selesai
+                             ->sum('total_amount'); // Asumsikan ada kolom total_price di tabel orders
 
-    public function deleteProduct($id)
-    {
-        Product::findOrFail($id)->delete();
-        return redirect()->route('admin.products')->with('success', 'Produk berhasil dihapus.');
-    }
+        // Ambil aktivitas terkini (misalnya, 3 aktivitas terbaru dari log atau model terkait)
+        // Ini bisa lebih kompleks tergantung bagaimana Anda mencatat aktivitas.
+        // Contoh sederhana: 3 order atau user terbaru
+        $recentActivities = [
+            'users' => User::latest()->take(1)->get(), // 1 user terbaru
+            'orders' => Order::latest()->take(2)->get(), // 2 order terbaru
+            'products' => Product::latest()->take(1)->get(), // 1 produk terbaru
+        ];
 
-    public function orders()
-    {
-        $orders = Order::with('user')->get();
-        return view('admin.orders', compact('orders'));
-    }
 
-    public function reports()
-    {
-        $reports = Report::with('user')->get();
-        return view('admin.reports', compact('reports'));
-    }
-
-    public function settings()
-    {
-        return view('admin.settings');
-    }
-
-    public function saveSettings(Request $request)
-    {
-        // Simpan konfigurasi sistem di sini
-        return redirect()->route('admin.settings')->with('success', 'Pengaturan berhasil disimpan.');
-    }
-
-    public function categories()
-    {
-        $categories = Category::all();
-        return view('admin.categories', compact('categories'));
-    }
-
-    public function storeCategory(Request $request)
-    {
-        $request->validate(['name' => 'required|string|max:255']);
-        Category::create(['name' => $request->name]);
-        return redirect()->route('admin.categories')->with('success', 'Kategori berhasil ditambahkan.');
-    }
-
-    public function deleteCategory($id)
-    {
-        Category::findOrFail($id)->delete();
-        return redirect()->route('admin.categories')->with('success', 'Kategori berhasil dihapus.');
+        return view('admin.dashboard', compact(
+            'totalUsers',
+            'totalProducts',
+            'newOrders',
+            'todayRevenue',
+            'recentActivities'
+        ));
     }
 }

@@ -4,16 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; 
-use Illuminate\Database\Eloquent\Relations\HasMany;  
 
 class Product extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
-        'owner_id',
+        'user_id', // Foreign key ke user (owner)
         'category_id',
         'name',
         'description',
@@ -22,20 +19,24 @@ class Product extends Model
         'image',
     ];
 
-    public function owner(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(User::class);
     }
 
- 
-    public function category(): BelongsTo
+    public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-
-    public function orderItems(): HasMany
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }
-}
+
