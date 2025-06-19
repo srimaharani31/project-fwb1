@@ -75,6 +75,8 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus')->middleware('can:manage-orders');
     // Route::resource('products', ProductController::class);
+
+    Route::delete('/owner/reviews/{review}', [ReviewController::class, 'destroy'])->name('owner.reviews.destroy');
 });
 
 Route::middleware(['auth', 'role:pelanggan'])->group(function () {
@@ -83,6 +85,11 @@ Route::middleware(['auth', 'role:pelanggan'])->group(function () {
     Route::get('/orders', [PelangganOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [PelangganOrderController::class, 'show'])->name('orders.show');
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+    Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+
+
+
 
     Route::post('/products/{product}/buy', [OrderController::class, 'placeOrder'])->name('products.buy');
 

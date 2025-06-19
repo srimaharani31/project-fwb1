@@ -68,7 +68,7 @@
                         <tfoot>
                             <tr>
                                 <th colspan="3" class="text-end">Total:</th>
-                                <th>Rp {{ number_format($order->total_price, 0, ',', '.') }}</th>
+                                <th>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <div class="col-lg-4 mb-4">
+    <!-- <div class="col-lg-4 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 fw-bold text-primary">Berikan Ulasan</h6>
@@ -137,6 +137,6 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 @endsection

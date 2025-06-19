@@ -72,4 +72,21 @@ class User extends Authenticatable
     {
         return $this->role === $role; // Sesuaikan dengan cara Anda menyimpan role
     }
+
+
+    public function isOwner()
+    {
+        return $this->role === 'owner';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isPembeli()
+    {
+        // Assuming 'pembeli' is the role string for buyers
+        return $this->role === 'pembeli';
+    }
 }

@@ -21,18 +21,12 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Hapus atau komen baris ini:
-    // public function orderDetails()
-    // {
-    //     return $this->hasMany(OrderItem::class);
-    // }
-
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    public function items() // Ini yang akan Anda gunakan secara konsisten
+    public function orderItems() // <-- Ubah dari 'items()' menjadi 'orderItems()'
     {
         return $this->hasMany(OrderItem::class);
     }

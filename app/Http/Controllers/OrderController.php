@@ -96,4 +96,43 @@ class OrderController extends Controller
 
         return redirect()->route('orders.index')->with('success', 'Status pesanan berhasil diperbarui.');
     }
+
+    public function cancel(Request $request, Order $order)
+    {
+        // Otorisasi: Pastikan pelanggan yang sedang login adalah pemilik pesanan ini.
+        if ($request->user()->id !== $order->user_id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk membatalkan pesanan ini.');
+        }
+
+        // Validasi: Hanya pesanan dengan status tertentu yang bisa dibatalkan
+        if (!in_array($order->status, ['pending_payment', 'processing'])) {
+            return redirect()->back()->with('error', 'Pesanan ini tidak dapat dibatalkan karena statusnya sudah ' . ucfirst(str_replace('_', ' ', $order->status)) . '.');
+        }
+
+        // Memulai transaksi database untuk memastikan konsistensi data
+        DB::beginTransaction();
+        try {
+            // Ubah status pesanan menjadi 'cancelled'
+            $order->status = 'cancelled';
+            $order->save();
+
+            // Opsional: Kembalikan stok produk yang ada di pesanan ini
+            // Ini penting jika Anda mengelola inventaris
+            foreach ($order->orderItems as $item) {
+                $product = $item->product; // Asumsi OrderItem memiliki relasi ke Product
+                if ($product) {
+                    $product->stock += $item->quantity; // Tambahkan kembali kuantitas ke stok
+                    $product->save();
+                }
+            }
+
+            DB::commit(); // Selesaikan transaksi
+
+            return redirect()->route('orders.index')->with('success', 'Pesanan #PEL-'.$order->id.' berhasil dibatalkan.');
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Batalkan semua perubahan jika terjadi error
+            return redirect()->back()->with('error', 'Gagal membatalkan pesanan. Silakan coba lagi. Error: ' . $e->getMessage());
+        }
+    }
 }
