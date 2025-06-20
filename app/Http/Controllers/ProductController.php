@@ -26,9 +26,7 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
         // Hanya owner yang bisa membuat produk

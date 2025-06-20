@@ -2,32 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order; // Pastikan model Order diimpor
-use App\Models\Product; // Digunakan jika Anda menampilkan produk di form ulasan
+use App\Models\Order; 
+use App\Models\Product; 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Untuk mendapatkan user yang sedang login
+use Illuminate\Support\Facades\Auth; 
 
 class PelangganOrderController extends Controller
 {
-    /**
-     * Display a listing of orders for the authenticated customer.
-     */
     public function index()
     {
-        // Ambil semua pesanan milik pelanggan yang sedang login
-        // Urutkan berdasarkan tanggal terbaru
+      
         $orders = Auth::user()->orders()->orderBy('created_at', 'desc')->get();
 
         return view('pelanggan.orders.index', compact('orders'));
     }
 
-    /**
-     * Display the specified order for the authenticated customer.
-     */
     public function show(Order $order)
     {
-        // Pastikan pesanan ini milik user yang sedang login
-        // Jika tidak, kembalikan 403 Forbidden atau redirect
+     
         if ($order->user_id !== Auth::id()) {
             abort(403, 'Anda tidak memiliki izin untuk melihat pesanan ini.');
         }
