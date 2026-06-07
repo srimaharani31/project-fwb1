@@ -31,16 +31,16 @@
 				</button>
 
 				<div class="collapse navbar-collapse" id="navbarsFurni">
-					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item active">
-							<a class="nav-link" href="home">Home</a>
-						</li>
-						<li><a href="/about">about</a></li>
-						<li><a href="/cart">cart</a></li>
-						<li><a href="/blog">blog</a></li>
-						<li><a href="/checkout">checkout</a></li>
-						<li><a href="/contact">contact</a></li>
-					</ul>
+						<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+							<li class="nav-item active">
+								<a class="nav-link" href="{{ route('home') }}">Home</a>
+							</li>
+							<li><a href="/about">about</a></li>
+							<li><a href="/cart">cart</a></li>
+							<li><a href="/blog">blog</a></li>
+							<li><a href="/checkout">checkout</a></li>
+							<li><a href="/contact">contact</a></li>
+						</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 						<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
