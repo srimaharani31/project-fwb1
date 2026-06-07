@@ -33,13 +33,13 @@
 				<div class="collapse navbar-collapse" id="navbarsFurni">
 					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
 						<li class="nav-item active">
-							<a class="nav-link" href="index">Home</a>
+							<a class="nav-link" href="home">Home</a>
 						</li>
-						<li><a class="nav-link" href="shop">Shop</a></li>
-						<li><a class="nav-link" href="about">About us</a></li>
-						<li><a class="nav-link" href="services">Services</a></li>
-						<li><a class="nav-link" href="blog">Blog</a></li>
-						<li><a class="nav-link" href="contact">Contact us</a></li>
+						<li><a href="/about">about</a></li>
+						<li><a href="/cart">cart</a></li>
+						<li><a href="/blog">blog</a></li>
+						<li><a href="/checkout">checkout</a></li>
+						<li><a href="/contact">contact</a></li>
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -72,6 +72,9 @@
 				</div>
 			</div>
 		<!-- End Hero Section --> 
+
+
+		@yield('content')
 
 
 			
@@ -124,10 +127,10 @@
 						<div class="row links-wrap">
 							<div class="col-6 col-sm-6 col-md-3">
 								<ul class="list-unstyled">
-									<li><a href="#">About us</a></li>
+									<li><a href="/">About us</a></li>
 									<li><a href="#">Services</a></li>
 									<li><a href="#">Blog</a></li>
-									<li><a href="#">Contact us</a></li>
+									<li><a href=" #">Contact us</a></li>
 								</ul>
 							</div>
 

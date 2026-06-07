@@ -1,5 +1,5 @@
 <?php
-
+  // app/Http/Controllers/Auth/LoginController.php
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function showLoginForm()
+    public function show()
     {
         return view('auth.login');
     }
@@ -18,23 +18,21 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            $user = Auth::user();
 
-            // Redirect berdasarkan role
-            switch (auth()->user()->role) {
-                case 'admin':
-                    return redirect()->route('admin.dashboard');
-                case 'owner':
-                    return redirect()->route('owner.dashboard');
-                default:
-                    return redirect()->route('pelanggan.dashboard');
+            // Redirect sesuai role
+            if ($user->role == 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role == 'owner') {
+                return redirect()->route('owner.dashboard');
+            } else {
+                return redirect()->route('pengguna.dashboard');
             }
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ]);
+        return back()->withErrors(['email' => 'Email atau password salah']);
     }
+
     public function logout(Request $request)
     {
         Auth::logout();
